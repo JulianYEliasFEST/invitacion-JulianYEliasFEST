@@ -166,13 +166,13 @@
       box-shadow: 0 0 20px var(--color-sombra);
       text-align: center;
       border: 2px solid var(--color-secundario);
+      transition: transform 0.2s ease-out;
     }
 
     .close-modal {
       position: absolute;
       top: 10px;
       right: 10px;
-      transform: translate(0, 0);
       font-size: 24px;
       color: var(--color-secundario);
       cursor: pointer;
@@ -255,7 +255,7 @@
     <div class="event-card">
       <div class="event-type">Mesa de Regalos</div>
       <div class="event-location">Si deseas tener un detalle con nosotros, puedes visitar nuestra mesa de regalos en Liverpool.</div>
-      <a class="map-button" href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51780014" target="_blank" rel="noopener noreferrer">Ver en Liverpool</a>
+      <a class="map-button" href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51780014" target="_blank" rel="noopener noreferrer">Ver Regalos</a>
     </div>
     <button class="confirm-button" onclick="openModal()">Confirma asistencia</button>
   </div>
@@ -298,7 +298,9 @@
       document.getElementById('rsvpModal').classList.add('active');
       document.getElementById("name").focus();
       document.body.style.overflow = 'hidden';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
     function closeModal() {
       document.getElementById('rsvpModal').classList.remove('active');
       document.body.style.overflow = '';
@@ -332,16 +334,32 @@
           console.error("Error al guardar en Firebase:", error);
         });
     });
+
+    // --- 💡 Ajuste para que el modal suba cuando aparece el teclado ---
+    const modal = document.getElementById('rsvpModal');
+    const modalContent = modal.querySelector('.modal-content');
+
+    window.visualViewport?.addEventListener('resize', () => {
+      if (!modal.classList.contains('active')) return;
+      const viewportHeight = window.visualViewport.height;
+      const screenHeight = window.innerHeight;
+      const keyboardVisible = screenHeight - viewportHeight > 150;
+
+      if (keyboardVisible) {
+        modalContent.style.transform = 'translateY(-15%)';
+      } else {
+        modalContent.style.transform = 'translateY(0)';
+      }
+    });
   </script>
 
   <!-- Footer dinámico -->
   <footer id="siteFooter">
-    Versión <strong>1.0.1</strong> — 
+    Versión <strong>1.0.2</strong> — 
     <time id="versionDate" style="font-size:12px;color:#bdbdbd;"></time>
   </footer>
 
   <script>
-    // Mostrar fecha y hora actuales en el footer
     (function() {
       const fecha = new Date();
       const opciones = {
@@ -354,4 +372,3 @@
   </script>
 </body>
 </html>
-
